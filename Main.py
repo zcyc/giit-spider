@@ -12,7 +12,7 @@ User_Agen = [
 
 header = {
     'User-Agent': random.choice(User_Agen),
-    'Origin': 'http://xky.guet.edu.cn:82',
+    'Origin': 'https://42.247.31.200/web/1/http/0/172.16.18.194/',
     'Accept-Encoding': 'gzip, deflate',
     'Accept-Language': 'zh-CN,zh;q=0.8',
     'Upgrade-Insecure-Requests': '1',
@@ -21,8 +21,14 @@ header = {
     'Connection': 'keep-alive'
 }
 
-loginUrl = 'http://xky.guet.edu.cn:82/student/public/login.asp'
-courseUrl = 'http://xky.guet.edu.cn:82/student/Select.asp'
+loginUrlOld = 'http://xky.guet.edu.cn:82/student/public/login.asp'
+courseUrlOld = 'http://xky.guet.edu.cn:82/student/Select.asp'
+
+loginUrlSchool = 'http://172.16.18.194/student/public/login.asp'
+courseUrlSchool = 'http://172.16.18.194/student/Select.asp'
+
+loginUrlVpn = 'https://42.247.31.200/web/1/http/0/172.16.18.194/student/public/login.asp'
+courseUrlVpn = 'https://42.247.31.200/web/1/http/0/172.16.18.194/student/Select.asp'
 
 def rub(username,password,classID):
     time.sleep(0.1)
@@ -42,45 +48,45 @@ def rub(username,password,classID):
 
     while 1:
         try:
-            login.post(loginUrl, data=data, timeout=0.5)
-            print('%sµÇÂ¼³É¹¦'%data['username'])
+            login.post(loginUrlVpn, data=data, timeout=0.5)
+            print('%sç™»å½•æˆåŠŸ'%data['username'])
             break
         except:
-            print('%sµÇÂ¼Ê§°Ü'%data['username'])
+            print('%sç™»å½•å¤±è´¥'%data['username'])
             pass
 
     while 1:
         while 1:
             try:
-                rub = login.post(courseUrl, data=classinfo, timeout=0.5)
+                rub = login.post(courseUrlVpn, data=classinfo, timeout=0.5)
                 break
             except:
-                print('%sÕıÔÚ³¢ÊÔÑ¡¿Î'%data['username'])
+                print('%sæ­£åœ¨å°è¯•é€‰è¯¾'%data['username'])
                 pass
         try:
-            if rub.text.index('ÒÑ±»¼ÓÈëµ½Êı¾İ¿âÖĞ') != -1:
-                print('%sÑ¡¿Î³É¹¦£¡' % data['username'])
+            if rub.text.index('å·²è¢«åŠ å…¥åˆ°æ•°æ®åº“ä¸­') != -1:
+                print('%sé€‰è¯¾æˆåŠŸï¼' % data['username'])
                 with open('success.txt','a') as file:
                     file.write(data['username']+'\r\n')
                 break
         except:
             try:
-                if rub.text.index('Ñ¡¿ÎÈËÊıÒÑÂú') != -1:
-                    print('%sËùÑ¡¿Î³ÌÒÑÂú'%data['username'])
+                if rub.text.index('é€‰è¯¾äººæ•°å·²æ»¡') != -1:
+                    print('%sæ‰€é€‰è¯¾ç¨‹å·²æ»¡'%data['username'])
                     break
             except:
                 try:
-                    if rub.text.index('ÄãÒÑ¾­Ñ¡¹ı') != -1:
-                        print('%sÒÑÑ¡¸Ã¿Î³Ì'%data['username'])
+                    if rub.text.index('ä½ å·²ç»é€‰è¿‡') != -1:
+                        print('%så·²é€‰è¯¥è¯¾ç¨‹'%data['username'])
                         break
                 except:
                     try:
-                        if rub.text.index('ËùÑ¡ÃÅÊıÒÑ³¬¹ı') != -1:
-                            print('%s±¾Ñ§ÆÚËùÑ¡¿Î³ÌÒÑÂú'%data['username'])
+                        if rub.text.index('æ‰€é€‰é—¨æ•°å·²è¶…è¿‡') != -1:
+                            print('%sæœ¬å­¦æœŸæ‰€é€‰è¯¾ç¨‹å·²æ»¡'%data['username'])
                             break
                     except:
                         pass
-            print('%sÑ¡¿ÎÊ§°Ü£¡Ô­ÒòÎ´Öª'%data['username'])
+            print('%sé€‰è¯¾å¤±è´¥ï¼åŸå› æœªçŸ¥'%data['username'])
             break
 
 UserList = './SelectList.txt'
@@ -88,8 +94,9 @@ with open(UserList) as Users:
     lines = Users.readlines()
     myData = {}
     for line in lines:
-        myData['user'] = myline[0]
-        myData['passwd'] = myline[1]
-        myData['courseID'] = myline[2]
+        myData['user'] = line[0]
+        myData['passwd'] = line[1]
+        myData['courseID'] = line[2]
         myThread = threading.Thread(name='User: ' + myData['user'], target=rub,args=(myData['user'], myData['passwd'], myData['courseID'],))
         myThread.start()
+        
